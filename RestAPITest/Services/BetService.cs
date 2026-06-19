@@ -1,12 +1,14 @@
-﻿using RestAPITest.DTO;
+﻿using System;
 using System.Diagnostics;
+using System.Text.Json;
+using RestAPITest.DTO;
 
 namespace RestAPITest.Services
 {
     public interface IBetService
     {
         public Task<BetDTO> GetBet();
-        public Task PostBet(BetDTO bet);
+        public void PostBet(BetDTO bet);
     }
 
     public class BetService : IBetService
@@ -15,29 +17,37 @@ namespace RestAPITest.Services
 
         public async Task<BetDTO> GetBet()
         {
-            if (_stopwatch == null)
+            BetDTO betResult;
+            if (_stopwatch == null || _stopwatch.ElapsedMilliseconds >= 60000)
             {
-                _stopwatch = Stopwatch.StartNew();
+                betResult = new BetDTO()
+                {
+                    Success = true,
+                    RoundNumber = 10208,
+                    Box1 = new BoxDTO() { LessParity = "odd" },
+                    Box2 = new BoxDTO() { LessParity = "even" },
+                };
+                if (_stopwatch == null)
+                    _stopwatch = Stopwatch.StartNew();
+                else
+                    _stopwatch.Restart();
+
             }
             else
             {
-                while (_stopwatch.ElapsedMilliseconds < 90000)
+                betResult = new BetDTO()
                 {
-                    await Task.Delay(500);
-                }
+                    Success = true,
+                    Message = "No current bets."
+                };
             }
 
-            _stopwatch.Restart();
-
-            return new BetDTO()
-            {
-
-            };
+            return betResult;
         }
 
-        public async Task PostBet(BetDTO bet)
+        public void PostBet(BetDTO bet)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(JsonSerializer.Serialize(bet));
         }
     }
 }
