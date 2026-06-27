@@ -13,17 +13,21 @@ namespace RestAPITest.Services
 
     public class BetService : IBetService
     {
+        static int RoundNumber = 500;
         private Stopwatch? _stopwatch;
 
         public async Task<BetDTO> GetBet()
         {
             BetDTO betResult;
-            if (_stopwatch == null || _stopwatch.ElapsedMilliseconds >= 60000)
+            if (_stopwatch == null
+                || _stopwatch.ElapsedMilliseconds >= 10000)
+            //|| _stopwatch.ElapsedMilliseconds >= 60000)
             {
                 betResult = new BetDTO()
                 {
                     Success = true,
-                    RoundNumber = 10208,
+                    RoundId = "ab0c-ab0c-ab0c-ab0c",
+                    RoundNumber = RoundNumber,
                     Box1 = new BoxDTO() { LessParity = "odd" },
                     Box2 = new BoxDTO() { LessParity = "even" },
                 };
@@ -31,7 +35,6 @@ namespace RestAPITest.Services
                     _stopwatch = Stopwatch.StartNew();
                 else
                     _stopwatch.Restart();
-
             }
             else
             {
@@ -48,6 +51,7 @@ namespace RestAPITest.Services
         public void PostBet(BetDTO bet)
         {
             Console.WriteLine(JsonSerializer.Serialize(bet));
+            RoundNumber++;
         }
     }
 }

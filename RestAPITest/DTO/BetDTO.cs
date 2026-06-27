@@ -7,7 +7,8 @@ namespace RestAPITest.DTO
     {
         public bool? Success { get; set; }
         public string? Message { get; set; }
-        public int? RoundNumber { get; set; }
+        public int RoundNumber { get; set; } = 0;
+        public string RoundId { get; set; } = "";
         public BoxDTO? Box1 { get; set; }
         public BoxDTO? Box2 { get; set; }
     }
